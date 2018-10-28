@@ -62,6 +62,18 @@
 						@click="giveUp">{{ giveUpText }}</button>
 			</div>
 		</section>
+
+		<section class="row log-section" v-if="turns.length > 0">
+			<ul class="log-section-list">
+				<li 
+					class="log-section-item text-center"
+					v-for="(turn, index) in turns"
+					:class="{'first-player-log': turn.isPlayer, 'second-player-log': !turn.isPlayer}"
+					:key="index">
+						{{ turn.text }}
+					</li>
+			</ul>
+		</section>
 	</section>
 </template>
 
@@ -80,7 +92,8 @@
 				giveUpText: 'give up',
 				healthOfFirstPlayer: 100,
 				healthOfSecondPlayer: 100,
-				gameIsRunning: false
+				gameIsRunning: false,
+				turns: []
 			}
 		},
 		methods: {
@@ -88,10 +101,15 @@
 				this.gameIsRunning = true;
 				this.healthOfFirstPlayer = 100;
 				this.healthOfSecondPlayer = 100;
+				this.turns = [];
 			},
 			attack() {
-				this.healthOfSecondPlayer -= this.calculateDamage(3, 12);
-
+				var damage = this.calculateDamage(3, 12);
+				this.healthOfSecondPlayer -= damage;
+				this.turns.unshift({
+					isPlayer: true,
+					text: 'Player hits Monster for ' + damage
+				});
 				if (this.healthOfFirstPlayer <=0) {
 					this.checkWin();
 					return;
@@ -100,7 +118,12 @@
 				this.secondPlayerAttack();
 			},
 			specialAttack() {
-				this.healthOfSecondPlayer -= this.calculateDamage(10, 20);
+				var damage = this.calculateDamage(10, 20);
+				this.healthOfSecondPlayer -= damage;
+				this.turns.unshift({
+					isPlayer: true,
+					text: 'Player hits Monster hard for ' + damage
+				});
 
 				if (this.checkWin()) {
 					return;
@@ -114,13 +137,24 @@
 				} else {
 					this.healthOfFirstPlayer = 100;
 				}
+
+				this.turns.unshift({
+					isPlayer: true,
+					text: 'Player heals for 10'
+				});
+
 				this.secondPlayerAttack();
 			},
 			giveUp() {
 				this.gameIsRunning = false;
 			},
 			secondPlayerAttack() {
-				this.healthOfFirstPlayer -= this.calculateDamage(5, 12);
+				var damage = this.calculateDamage(5, 12);
+				this.healthOfFirstPlayer -= damage;
+				this.turns.unshift({
+					isPlayer: false,
+					text: 'Monster hits Player for ' + damage
+				});
 				this.checkWin();
 			},
 			calculateDamage(min, max) {
@@ -150,6 +184,10 @@
 </script>
 
 <style>
+	ul {
+		list-style: none;
+	}
+
 	.text-center {
 		text-align: center;
 	}
@@ -239,5 +277,19 @@
 	#give-up {
 		color: white;
 		background-color: black;
+	}
+
+	.log-section-item {
+		padding: 0 5px;
+	}
+
+	.first-player-log {
+		color: green;
+		background-color: #ffefd2;
+	}
+
+	.second-player-log {
+		color: blue;
+		background-color: #c77c7c;
 	}
 </style>
