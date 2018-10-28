@@ -1,17 +1,16 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+	<main id="app">
+		<simple-game-like-mortal-combat />
+	</main>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SimpleGameLikeMortalCombat from './components/SimpleGameLikeMortalCombat.vue'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    SimpleGameLikeMortalCombat
   }
 }
 </script>
